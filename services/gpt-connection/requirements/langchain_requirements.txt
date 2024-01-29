@@ -1,5 +1,6 @@
 langchain
 langchain-experimental
+langchain-openai
 openai
 pandas
 numpy
@@ -8,3 +9,5 @@ psycopg2
 pgvector
 python-dotenv
 psycopg2
+pypdf
+tiktoken
