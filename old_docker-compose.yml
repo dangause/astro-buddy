@@ -1,15 +1,15 @@
 services:
   db:
     container_name: db
-    hostname: db
-    image: ankane/pgvector
+    env_file:
+      - ./.env
+    build: 
+      context: ./services/postgres-db
+      dockerfile: dockerfile-postgres-df.Dockerfile
     ports:
      - 5433:5432
     restart: always
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password1
+
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
