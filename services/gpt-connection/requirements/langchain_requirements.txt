@@ -5,9 +5,10 @@ openai
 pandas
 numpy
 tiktoken
-psycopg2
 pgvector
 python-dotenv
+psycopg2-binary 
 psycopg2
 pypdf
 tiktoken
+pydantic-settings

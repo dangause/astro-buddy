@@ -1,10 +1,11 @@
 services:
+  
   db:
     container_name: db
     hostname: db
     image: ankane/pgvector
     ports:
-     - 5433:5432
+     - 5432:5432
     restart: always
     environment:
       - POSTGRES_DB=postgres
@@ -13,8 +14,23 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  
+  pgadmin:
+    container_name: pgadmin
+    hostname: pgadmin
+    image: dpage/pgadmin4
+    ports: 
+      - "8888:80"
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=danpgause@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=password1
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
 
 volumes:
   pgdata:
     external: true
+  pgadmin-data:
+
 

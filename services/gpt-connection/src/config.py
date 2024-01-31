@@ -1,5 +1,5 @@
 import os
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 API_CHAT_STR = "/chat"
 API_DATA_STR = "/data"

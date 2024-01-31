@@ -1,5 +1,5 @@
 import os
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 API_CHAT_STR = "/chat"
 API_DATA_STR = "/data"
@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     POSTGRES_DB_PORT: str
     POSTGRES_DB_USER: str
     POSTGRES_DB_DBNAME: str
+
+    PGVECTOR_COLLECTION_NAME: str
 
     COSINE_THRESHOLD: float = 0
 
