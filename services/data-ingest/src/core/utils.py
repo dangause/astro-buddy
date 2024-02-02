@@ -27,13 +27,20 @@ password = settings.POSTGRES_DB_PASSWORD
 dbname = settings.POSTGRES_DB_DBNAME
 collection_name = settings.PGVECTOR_COLLECTION_NAME
 
-def get_today_and_week_ago():
-    today = DT.date.today().strftime('%Y-%m-%d')
-    week_ago = today - DT.timedelta(days=7)
+def get_today_and_n_days_ago(n):
+    today = DT.date.today()
+    week_ago = today - DT.timedelta(days=n)
+    today = today.strftime('%Y-%m-%d')
     week_ago = week_ago.strftime('%Y-%m-%d')
     return today, week_ago
 
-today, week_ago = get_today_and_week_ago()
+today, week_ago = get_today_and_n_days_ago(7)
+
+def get_conn_string():
+    CONNECTION_STRING = f"postgresql://{user}:{password}@{host}:{port}/{dbname}"
+    return CONNECTION_STRING
+
+CONNECTION_STRING = get_conn_string()
 
 def read_pdf(file_path):
     pdf_reader = PdfReader(file_path)
@@ -77,9 +84,6 @@ def get_total_embeddings_cost(df):
 
 
 def get_arxiv_pdfs_to_df(date_from="2024-01-22", date_until="2024-01-29"):
-    # Construct the default API client.
-    client = arxiv.Client()
-
     scraper = ax.Scraper(
         category="physics:astro-ph",
         date_from=date_from,
@@ -87,8 +91,12 @@ def get_arxiv_pdfs_to_df(date_from="2024-01-22", date_until="2024-01-29"):
         t=10,
         filters={"abstract": ["quasar"]},
     )
-    output = scraper.scrape()
-    cols = ("id", "title", "categories", "abstract", "doi", "created", "updated", "authors")
+    try:
+        output = scraper.scrape()
+    except Exception as e:
+        raise e
+        
+    cols = ["id", "title", "categories", "abstract", "doi", "created", "updated", "authors"]
     df = pd.DataFrame(output, columns=cols)
     df['id_no_period'] = df.id.apply(lambda x: x.replace(".",""))
 
@@ -106,7 +114,7 @@ def get_arxiv_pdfs_to_df(date_from="2024-01-22", date_until="2024-01-29"):
     df = df.drop(['doi', 'updated'], axis=1)
     df = df.dropna()
     df = df.reset_index(drop=True)
-    df = df.map(lambda x: re.sub('[^a-zA-Z0-9 <,>.?/:;"|\-_=+]+', ' ', str(x)))
+    df = df.map(lambda x: str(x).replace("\x00", "\uFFFD"))
     print(get_total_embeddings_cost(df))
 
     return df
@@ -134,22 +142,22 @@ def insert_embeddings_into_db(chunked_documents, reset_db=False):
     cur.execute("CREATE EXTENSION IF NOT EXISTS vector");
     conn.commit()
 
-    embeddings = OpenAIEmbeddings()
+    embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
 
-    print('Inserting documents via PGVector Langchain DB')
+    print('Inserting documents into DB via PGVector Langchain')
     db = PGVector.from_documents(
         documents=chunked_documents,
         embedding=embeddings,
         collection_name=collection_name,
         connection_string=CONNECTION_STRING,
         distance_strategy=DistanceStrategy.COSINE,
-        pre_delete_collection=reset_db # change this if you don't want to reset the db!!
+        pre_delete_collection=reset_db 
     )
     return None
 
 
-def ingest_arxiv(date_from=today, date_until=week_ago, reset_db=False):
-    print('Step 1: arxiv articles to df')
+def ingest_arxiv(date_from=week_ago, date_until=today, reset_db=False):
+    print(f'Step 1: Getting arxiv articles from {date_from} to {date_until} into a df')
     df = get_arxiv_pdfs_to_df(date_from, date_until)
     print('Step 2: arxiv df to chunked docs')
     chunked_documents = pdf_df_to_chunked_docs_l(df)
@@ -164,13 +172,11 @@ def ingest_arxiv(date_from=today, date_until=week_ago, reset_db=False):
     }
 
 
-def delete_collection():
-    CONNECTION_STRING = f"postgresql://{user}:{password}@{host}:{port}/{dbname}"
-    
-    store = PGVector.from_documents(
+def delete_collection(collection_name = collection_name, connection_string = CONNECTION_STRING):
+    store = PGVector(
         collection_name=collection_name,
-        connection_string=CONNECTION_STRING,
-        distance_strategy=DistanceStrategy.COSINE,
+        connection_string=connection_string,
+        embedding_function=OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY),
     )
 
     store.delete_collection()

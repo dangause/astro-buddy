@@ -1,5 +1,8 @@
 import os
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
+import dotenv
+
+config_env = dotenv.find_dotenv('.env.config')
 
 API_CHAT_STR = "/chat"
 API_DATA_STR = "/data"
@@ -15,17 +18,16 @@ class Settings(BaseSettings):
     POSTGRES_DB_PORT: str
     POSTGRES_DB_USER: str
     POSTGRES_DB_DBNAME: str
-
     PGVECTOR_COLLECTION_NAME: str
 
     COSINE_THRESHOLD: float = 0
 
-    CORS_ORIGINS: list[str]
+    DATA_INGEST_CORS_ORIGINS: list[str]
+    GPT_CONNECTION_CORS_ORIGINS: list[str]
     CORS_HEADERS: list[str]
 
-    class Config:
-        env_file = f"{os.path.dirname(os.path.abspath(__file__))}" + "/../../.env"
-        env_file_encoding = "utf-8"
+    model_config = SettingsConfigDict(env_file=config_env, env_file_encoding='utf-8', extra='allow')
 
 
 settings = Settings()
+

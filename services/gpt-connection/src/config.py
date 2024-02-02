@@ -22,7 +22,8 @@ class Settings(BaseSettings):
 
     COSINE_THRESHOLD: float = 0
 
-    CORS_ORIGINS: list[str]
+    DATA_INGEST_CORS_ORIGINS: list[str]
+    GPT_CONNECTION_CORS_ORIGINS: list[str]
     CORS_HEADERS: list[str]
 
     model_config = SettingsConfigDict(env_file=config_env, env_file_encoding='utf-8', extra='allow')

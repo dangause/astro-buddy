@@ -1,2 +1,0 @@
-farm-haystack
-datasets>=2.6.1

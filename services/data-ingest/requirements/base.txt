@@ -8,5 +8,8 @@ langchain
 langchain-openai
 langchain-community
 pypdf
-tempfile
-json
+pydantic-settings
+fastapi
+orjson
+httpx
+uvicorn
