@@ -1,6 +1,7 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CorsMiddleware
-from src.config import API_DATA_STR
+from fastapi.middleware.cors import CORSMiddleware
+from src.config import settings
+from src.routers.chat import router as chat_router
 
 description = """
 Service that handles the parsing, encoding, and ingest of 
@@ -12,4 +13,16 @@ app = FastAPI(
     version = "0.1.0",
 )
 
-app.include_router()
+app.include_router(chat_router)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.CORS_ORIGINS,
+    allow_credentials = True,
+    allow_methods = ("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"),
+    allow_headers = settings.CORS_HEADERS
+)
+
+@app.get("/health", include_in_schema=False, summary="Health check for service")
+def health() -> dict[str, str]:
+    return {"status": "UP-v1.0"}

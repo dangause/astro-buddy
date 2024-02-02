@@ -1,0 +1,12 @@
+pandas
+arxivscraper
+arxiv
+tiktoken
+psycopg2
+pgvector
+langchain
+langchain-openai
+langchain-community
+pypdf
+tempfile
+json
