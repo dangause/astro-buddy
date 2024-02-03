@@ -16,3 +16,4 @@ fastapi
 orjson
 httpx
 uvicorn
+python-multipart
