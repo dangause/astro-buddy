@@ -8,7 +8,6 @@ tiktoken
 pgvector
 python-dotenv
 psycopg2-binary 
-psycopg2
 pypdf
 tiktoken
 pydantic-settings

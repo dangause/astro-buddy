@@ -35,6 +35,14 @@ services:
       context: ./services/gpt-connection
     ports:
       - 8000:8000
+  data-ingest:
+    container_name: data-ingest
+    env_file:
+      - .env.config
+    build:
+      context: ./services/data-ingest
+    ports:
+      - 8001:8001
   frontend:
     container_name: frontend
     build:

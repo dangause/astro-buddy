@@ -43,7 +43,7 @@ def get_conn_string():
 CONNECTION_STRING = get_conn_string()
 
 def read_pdf(file_path):
-    pdf_reader = PdfReader(file_path)
+    pdf_reader = PdfReader(file_path, strict=False)
     text = ""
 
     for page in pdf_reader.pages:
@@ -156,7 +156,7 @@ def insert_embeddings_into_db(chunked_documents, reset_db=False):
     return None
 
 
-def ingest_arxiv(date_from=week_ago, date_until=today, reset_db=False):
+def ingest_arxiv(date_from="2023-02-05", date_until=today, reset_db=False):
     print(f'Step 1: Getting arxiv articles from {date_from} to {date_until} into a df')
     df = get_arxiv_pdfs_to_df(date_from, date_until)
     print('Step 2: arxiv df to chunked docs')

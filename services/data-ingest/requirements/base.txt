@@ -2,7 +2,7 @@ pandas
 arxivscraper
 arxiv
 tiktoken
-psycopg2
+psycopg2-binary
 pgvector
 langchain
 langchain-openai
