@@ -4,7 +4,7 @@ export default async function handler(req, res) {
     const { userInput } = req.body;
 
     try {
-      const response = await fetch('http://localhost:8000/chat-rag', {
+      const response = await fetch('http://192.168.4.118:8000/chat-rag', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
