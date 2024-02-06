@@ -100,7 +100,6 @@ def construct_result_with_sources(responses, source_content, source_metadata):
 
 def ask(query):
     qa_chain = get_qa_chain()
-
     responses = qa_chain({"query": query})
 
     source_documents = responses["source_documents"]

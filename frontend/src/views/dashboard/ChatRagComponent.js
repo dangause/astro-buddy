@@ -2,6 +2,8 @@
 import { useState } from 'react';
 import { Card, CardHeader, CardContent, Grid, TextField, Button, Typography, CircularProgress, Box } from '@mui/material';
 
+import MuiMarkdown from 'mui-markdown';
+
 const ChatRagComponent = () => {
   const [userInput, setUserInput] = useState('');
   const [processedInput, setProcessedInput] = useState('');
@@ -63,9 +65,7 @@ const ChatRagComponent = () => {
             {loading ? (
               <CircularProgress size={20} /> // Render loading spinner while the API call is in progress
             ) : (
-              <Typography variant="body2" color="textSecondary">
-                {processedInput}
-              </Typography>
+              <MuiMarkdown>{processedInput}</MuiMarkdown>
             )}
           </Grid>
         </Grid>
