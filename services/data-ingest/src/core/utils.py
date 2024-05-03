@@ -156,14 +156,23 @@ def insert_embeddings_into_db(chunked_documents, reset_db=False):
     return None
 
 
-def ingest_arxiv(date_from="2023-02-05", date_until=today, reset_db=False):
-    print(f'Step 1: Getting arxiv articles from {date_from} to {date_until} into a df')
-    df = get_arxiv_pdfs_to_df(date_from, date_until)
-    print('Step 2: arxiv df to chunked docs')
-    chunked_documents = pdf_df_to_chunked_docs_l(df)
-    print('Step 3: insert embeddings into postgreSQL')
-    insert_embeddings_into_db(chunked_documents, reset_db=reset_db)
-    print('Embedded chunked documents inserted into postgreSQL database')
+def ingest_arxiv(date_from="2020-02-05", date_until=today, reset_db=False):
+    try:
+        print(f'Step 1: Getting arxiv articles from {date_from} to {date_until} into a df')
+        df = get_arxiv_pdfs_to_df(date_from, date_until)
+    except Exception as e:
+        print(getattr(e, 'message', str(e)))
+    try:
+        print('Step 2: arxiv df to chunked docs')
+        chunked_documents = pdf_df_to_chunked_docs_l(df)
+    except Exception as e:
+        print(getattr(e, 'message', str(e)))
+    try:
+        print('Step 3: insert embeddings into postgreSQL')
+        insert_embeddings_into_db(chunked_documents, reset_db=reset_db)
+        print('Embedded chunked documents inserted into postgreSQL database')
+    except Exception as e:
+        print(getattr(e, 'message', str(e)))
     return {
         "statusCode": 200,
         "body": json.dumps({

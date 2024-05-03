@@ -20,7 +20,7 @@ services:
     hostname: pgadmin
     image: dpage/pgadmin4
     ports: 
-      - "8888:80"
+      - "8887:80"
     restart: always
     environment:
       - PGADMIN_DEFAULT_EMAIL=danpgause@gmail.com

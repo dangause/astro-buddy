@@ -106,5 +106,6 @@ def ask(query):
     source_content = [doc.page_content for doc in source_documents]
     source_metadata = [doc.metadata for doc in source_documents]
     answer = construct_result_with_sources(responses, source_content, source_metadata)
-
+    if answer == None:
+        answer = "Error: something went wrong in backend. Troubleshoot"
     return answer
