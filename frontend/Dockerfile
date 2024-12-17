@@ -1,19 +1,21 @@
+# Stage 1: Install dependencies
 FROM node:18-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN  npm install --production
+RUN npm install
 
+# Stage 2: Build the application (used for production)
 FROM node:18-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED 1
-
 RUN npm run build
 
+# Stage 3: Runner for production
 FROM node:18-alpine AS runner
 WORKDIR /app
 
@@ -28,12 +30,8 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 
 USER nextjs
-
 EXPOSE 3000
-
 ENV PORT 3000
 
-CMD ["npm", "start"]
-
-
-# CMD ["npm", "run", "dev"]
+# Use this for development
+CMD ["npm", "run", "dev"]

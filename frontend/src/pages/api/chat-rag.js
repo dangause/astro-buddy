@@ -4,7 +4,8 @@ export default async function handler(req, res) {
     const { userInput } = req.body;
 
     try {
-      const response = await fetch('http://192.168.5.158:8000/chat-rag', {
+      // Use the backend service name for internal communication in Docker
+      const response = await fetch('http://backend:8000/chat-rag', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
