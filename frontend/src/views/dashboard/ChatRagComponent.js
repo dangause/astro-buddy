@@ -1,29 +1,50 @@
 // components/ChatRagComponent.js
 import { useState } from 'react';
-import { Card, CardHeader, CardContent, Grid, TextField, Button, Typography, CircularProgress, Box } from '@mui/material';
-
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  Grid,
+  TextField,
+  Button,
+  Typography,
+  CircularProgress
+} from '@mui/material';
 import MuiMarkdown from 'mui-markdown';
 
 const ChatRagComponent = () => {
+  const [apiKey, setApiKey] = useState('');
   const [userInput, setUserInput] = useState('');
   const [processedInput, setProcessedInput] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const handleApiKeyChange = (e) => {
+    setApiKey(e.target.value);
+  };
 
   const handleInputChange = (e) => {
     setUserInput(e.target.value);
   };
 
   const handleChatRag = async () => {
-    setLoading(true); // Set loading to true before the API call
+    setLoading(true);
+
+    if (!apiKey) {
+      alert("Please enter your OpenAI API key.");
+      setLoading(false);
+
+      return;
+    }
 
     try {
       const response = await fetch('/api/chat-rag', {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
+          Accept: 'application/json',
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`
         },
-        body: JSON.stringify({ userInput }),
+        body: JSON.stringify({ userInput })
       });
 
       if (!response.ok) {
@@ -34,16 +55,27 @@ const ChatRagComponent = () => {
       setProcessedInput(result.response);
     } catch (error) {
       console.error('Error processing response:', error);
+      setProcessedInput("⚠️ Error: " + error.message);
     } finally {
-      setLoading(false); // Set loading to false after the API call completes (success or error)
+      setLoading(false);
     }
   };
 
   return (
     <Card>
-      <CardHeader title='Quasar Query Machine' />
+      <CardHeader title="Quasar Query Machine" />
       <CardContent sx={{ pt: (theme) => `${theme.spacing(3)} !important` }}>
         <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12}>
+            <TextField
+              label="OpenAI API Key"
+              fullWidth
+              type="password"
+              value={apiKey}
+              onChange={handleApiKeyChange}
+              placeholder="sk-..."
+            />
+          </Grid>
           <Grid item xs={8}>
             <TextField
               label="User Input"
@@ -58,12 +90,11 @@ const ChatRagComponent = () => {
             </Button>
           </Grid>
           <Grid item xs={12}>
-          <Typography variant="body1" gutterBottom  style={{whiteSpace: 'pre-line'}}/>
-            <Typography variant="body1" gutterBottom  style={{whiteSpace: 'pre-line'}}>
+            <Typography variant="body1" gutterBottom style={{ whiteSpace: 'pre-line' }}>
               Processed Input:
             </Typography>
             {loading ? (
-              <CircularProgress size={20} /> // Render loading spinner while the API call is in progress
+              <CircularProgress size={20} />
             ) : (
               <MuiMarkdown>{processedInput}</MuiMarkdown>
             )}
