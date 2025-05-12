@@ -53,6 +53,7 @@
     "apexcharts-clevision": "3.28.5",
     "babel-eslint": "^10.1.0",
     "clsx": "^1.1.1",
+    "markdown-to-jsx": "^7.7.1",
     "mdi-material-ui": "^7.1.0",
     "mui-markdown": "^1.1.13",
     "next": "^12.3.4",

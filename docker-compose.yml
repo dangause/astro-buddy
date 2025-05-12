@@ -50,19 +50,19 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./frontend:/app
-      - /app/node_modules
     command: npm run dev
     ports:
       - "3000:3000"
     environment:
       NODE_ENV: development
-    expose: 
-      - 3000
+    working_dir: /app
+    depends_on:
+      - backend
 
 
 volumes:
   pgdata:
-    external: true
+    # external: true
   pgadmin-data:
 
 
