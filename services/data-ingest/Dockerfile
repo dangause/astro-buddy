@@ -1,4 +1,4 @@
-FROM python:3.12-slim as build
+FROM python:3.12-slim
 
 ENV PIP_DEFAULT_TIMEOUT=100 \
     PYTHONUNBUFFERED=1 \

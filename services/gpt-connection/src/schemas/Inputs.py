@@ -15,4 +15,4 @@ class Chat(GlobalBaseModel):
         return v
     
     class Config:
-        schema_extra = {"example":{"userInput":"What is a quasar?"}}
+        json_schema_extra = {"example":{"userInput":"What is a quasar?"}}
