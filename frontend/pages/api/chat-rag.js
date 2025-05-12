@@ -19,7 +19,7 @@ export default async function handler(req, res) {
   try {
     const backendUrl = process.env.BACKEND_URL;
 
-    const response = await fetch(`${backendUrl}/chat-rag`, {
+    const response = await fetch(`${backendUrl}/chat-rag/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

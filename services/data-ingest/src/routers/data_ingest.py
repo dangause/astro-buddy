@@ -53,10 +53,16 @@ def get_total_embeddings_cost(df):
 def get_existing_ids():
     conn = psycopg2.connect(CONNECTION_STRING)
     cur = conn.cursor()
-    cur.execute("SELECT cmetadata->>'id' FROM langchain_pg_embedding")
-    existing_ids = {row[0] for row in cur.fetchall()}
-    conn.close()
+    try:
+        cur.execute("SELECT cmetadata->>'id' FROM langchain_pg_embedding")
+        existing_ids = {row[0] for row in cur.fetchall()}
+    except psycopg2.errors.UndefinedTable:
+        print("⚠️ langchain_pg_embedding table does not exist yet.")
+        existing_ids = set()
+    finally:
+        conn.close()
     return existing_ids
+
 
 def fetch_arxiv_papers(query="quasar", max_results=100):
     search = arxiv.Search(
@@ -126,7 +132,11 @@ def insert_embeddings_into_db(chunked_documents, reset_db=False):
     for i in range(0, len(chunked_documents), batch_size):
         batch = chunked_documents[i:i + batch_size]
         print(f"  ➜ Embedding batch {i // batch_size + 1} of {((len(chunked_documents)-1)//batch_size)+1}")
-        vectorstore.add_documents(batch)
+        try:
+            vectorstore.add_documents(batch)
+        except Exception as e:
+            print(f"❌ Failed to insert batch {i}: {e}")
+
 
     print("✓ Insertion complete.")
 
