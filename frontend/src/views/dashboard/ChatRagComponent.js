@@ -37,14 +37,15 @@ const ChatRagComponent = () => {
     }
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/chat-rag`, {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+      const response = await fetch(`${backendUrl}/chat-rag`, {
         method: 'POST',
         headers: {
-          Accept: 'application/json',
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`
+          'Authorization': apiKey,
         },
-        body: JSON.stringify({ userInput })
+        body: JSON.stringify({ userInput }),
       });
       
 
