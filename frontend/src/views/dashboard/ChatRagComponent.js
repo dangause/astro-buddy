@@ -37,7 +37,7 @@ const ChatRagComponent = () => {
     }
 
     try {
-      const response = await fetch('/api/chat-rag', {
+      const response = await fetch('/api/chat-rag/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
