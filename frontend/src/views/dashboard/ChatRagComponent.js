@@ -37,9 +37,7 @@ const ChatRagComponent = () => {
     }
 
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-      const response = await fetch(`${backendUrl}/chat-rag`, {
+      const response = await fetch('/api/chat-rag', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

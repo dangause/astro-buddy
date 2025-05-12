@@ -6,24 +6,22 @@ export default async function handler(req, res) {
   const { userInput } = req.body;
 
   if (!userInput) {
-
     return res.status(400).json({ error: 'Missing userInput' });
   }
 
-  // 👇 Grab the Authorization header from the user's request
   const apiKey = req.headers.authorization;
 
   if (!apiKey) {
-
     return res.status(400).json({ error: 'Missing Authorization header' });
   }
 
   try {
-    const response = await fetch('http://backend:8000/chat-rag', {
+    const backendUrl = process.env.BACKEND_URL;
+    const response = await fetch(`${backendUrl}/chat-rag`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': apiKey, // 👈 Use user's key
+        'Authorization': apiKey,
       },
       body: JSON.stringify({ userInput }),
     });
@@ -36,20 +34,17 @@ export default async function handler(req, res) {
       data = JSON.parse(text);
     } catch (e) {
       console.error('❌ JSON parse failed');
-
       return res.status(response.status).json({ error: `Non-JSON backend response: ${text}` });
     }
 
     if (!response.ok) {
       console.error('⚠️ Backend returned error:', data);
-
       return res.status(response.status).json(data);
     }
 
     return res.status(200).json(data);
   } catch (error) {
     console.error('🔥 Error talking to backend:', error);
-
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 }
