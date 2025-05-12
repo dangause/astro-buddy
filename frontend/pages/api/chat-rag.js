@@ -22,7 +22,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`, // ✅ <-- FIXED HERE
+        'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({ userInput }),
     });
@@ -31,10 +31,12 @@ export default async function handler(req, res) {
     console.log('⬅️ Raw backend response:', text);
 
     let data;
+
     try {
       data = JSON.parse(text);
     } catch (e) {
       console.error('❌ JSON parse failed');
+
       return res.status(response.status).json({
         error: `Non-JSON backend response: ${text}`,
       });
@@ -42,12 +44,14 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       console.error('⚠️ Backend returned error:', data);
+
       return res.status(response.status).json(data);
     }
 
     return res.status(200).json(data);
   } catch (error) {
     console.error('🔥 Error talking to backend:', error);
+
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 }
