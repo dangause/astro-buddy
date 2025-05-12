@@ -16,14 +16,14 @@ app = FastAPI(
 app.include_router(chat_router)
 
 
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.GPT_CONNECTION_CORS_ORIGINS,
-    allow_credentials = True,
-    allow_methods = ("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"),
-    allow_headers = settings.CORS_HEADERS
+    allow_origins=["https://astro-buddy.vercel.app"],  # Or your actual deployed Vercel domain
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
 
 @app.get("/health", include_in_schema=False, summary="Health check for service")
 def health() -> dict[str, str]:

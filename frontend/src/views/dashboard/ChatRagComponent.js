@@ -37,15 +37,15 @@ const ChatRagComponent = () => {
     }
 
     try {
-      const response = await fetch('/api/chat-rag', {
+      const response = await fetch('/api/chat-rag/', {
         method: 'POST',
         headers: {
-          Accept: 'application/json',
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`,  // ✅ user-provided key
+          'Authorization': apiKey,
         },
-        body: JSON.stringify({ userInput })
+        body: JSON.stringify({ userInput }),
       });
+      
 
       if (!response.ok) {
         throw new Error('Failed to fetch data from the server');
